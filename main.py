@@ -13,6 +13,27 @@ def shortest_shortest_path(graph, source):
       (shortest path weight, shortest path number of edges). See test case for example.
     """
     ### TODO
+    dist = {source: (0, 0)} 
+    visited = set()
+    pq = [(0, 0, source)] 
+    
+    while pq:
+        (weight, edges, node) = heappop(pq)
+        
+        if node not in visited:
+            visited.add(node)
+            for neighbor, edge_weight in graph[node]:
+                new_weight = weight + edge_weight
+                new_edges = edges + 1
+                if neighbor not in dist or (new_weight, new_edges) < dist[neighbor]:
+                    dist[neighbor] = (new_weight, new_edges)
+                    heappush(pq, (new_weight, new_edges, neighbor))
+                elif neighbor not in visited and neighbor not in dist:
+                    dist[neighbor] = (float('inf'), float('inf'))
+    
+    return dist
+    
+    
     pass
     
 def test_shortest_shortest_path():
@@ -41,6 +62,19 @@ def bfs_path(graph, source):
       that vertex in the shortest path tree.
     """
     ###TODO
+    parents = {source: None}
+    visited = set([source])
+    queue = deque([source])
+
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                parents[neighbor] = node
+                queue.append(neighbor)
+
+    return parents
     pass
 
 def get_sample_graph():
@@ -66,6 +100,13 @@ def get_path(parents, destination):
       (excluding the destination node itself). See test_get_path for an example.
     """
     ###TODO
+    path = []
+    current = destination
+    while current in parents:
+        path.append(current)
+        current = parents[current]
+    path.reverse()
+    return ''.join(path[:-1])
     pass
 
 def test_get_path():
